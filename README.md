@@ -1,4 +1,4 @@
-# Mini Query Optimizer
+# Mini Cost-Based Query Optimizer
 
 A database systems project that explores query optimization using PostgreSQL and a custom query optimizer.
 
