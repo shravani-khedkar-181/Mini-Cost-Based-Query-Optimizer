@@ -1,0 +1,203 @@
+{
+  "customer": {
+    "row_count": 1500,
+    "columns": {
+      "acct_balance": {
+        "distinct": -0.9993333,
+        "null_frac": 0.0
+      },
+      "address": {
+        "distinct": -1.0,
+        "null_frac": 0.0
+      },
+      "comment": {
+        "distinct": -1.0,
+        "null_frac": 0.0
+      },
+      "cust_id": {
+        "distinct": -1.0,
+        "null_frac": 0.0
+      },
+      "market_segment": {
+        "distinct": 5.0,
+        "null_frac": 0.0
+      },
+      "name": {
+        "distinct": -1.0,
+        "null_frac": 0.0
+      },
+      "nationid": {
+        "distinct": 25.0,
+        "null_frac": 0.0
+      },
+      "phone": {
+        "distinct": -1.0,
+        "null_frac": 0.0
+      }
+    }
+  },
+  "orders": {
+    "row_count": 15000,
+    "columns": {
+      "clerk": {
+        "distinct": 1000.0,
+        "null_frac": 0.0
+      },
+      "comment": {
+        "distinct": -0.9996667,
+        "null_frac": 0.0
+      },
+      "cust_id": {
+        "distinct": 1000.0,
+        "null_frac": 0.0
+      },
+      "order_date": {
+        "distinct": -0.16006666,
+        "null_frac": 0.0
+      },
+      "order_id": {
+        "distinct": -1.0,
+        "null_frac": 0.0
+      },
+      "order_priority": {
+        "distinct": 5.0,
+        "null_frac": 0.0
+      },
+      "order_status": {
+        "distinct": 3.0,
+        "null_frac": 0.0
+      },
+      "ship_priority": {
+        "distinct": 1.0,
+        "null_frac": 0.0
+      },
+      "total_price": {
+        "distinct": -0.9997333,
+        "null_frac": 0.0
+      }
+    }
+  },
+  "lineitem": {
+    "row_count": 60175,
+    "columns": {
+      "comment": {
+        "distinct": -0.9575405,
+        "null_frac": 0.0
+      },
+      "commit_date": {
+        "distinct": 2454.0,
+        "null_frac": 0.0
+      },
+      "discount": {
+        "distinct": 11.0,
+        "null_frac": 0.0
+      },
+      "extended_price": {
+        "distinct": -0.5325301,
+        "null_frac": 0.0
+      },
+      "line_number": {
+        "distinct": 7.0,
+        "null_frac": 0.0
+      },
+      "line_status": {
+        "distinct": 2.0,
+        "null_frac": 0.0
+      },
+      "order_id": {
+        "distinct": -0.23029497,
+        "null_frac": 0.0
+      },
+      "part_id": {
+        "distinct": 2000.0,
+        "null_frac": 0.0
+      },
+      "quantity": {
+        "distinct": 50.0,
+        "null_frac": 0.0
+      },
+      "receipt_date": {
+        "distinct": 2515.0,
+        "null_frac": 0.0
+      },
+      "return_flag": {
+        "distinct": 3.0,
+        "null_frac": 0.0
+      },
+      "ship_date": {
+        "distinct": 2510.0,
+        "null_frac": 0.0
+      },
+      "ship_instruct": {
+        "distinct": 4.0,
+        "null_frac": 0.0
+      },
+      "ship_mode": {
+        "distinct": 7.0,
+        "null_frac": 0.0
+      },
+      "supplierid": {
+        "distinct": 100.0,
+        "null_frac": 0.0
+      },
+      "tax": {
+        "distinct": 9.0,
+        "null_frac": 0.0
+      }
+    }
+  },
+  "supplier": {
+    "row_count": 100,
+    "columns": {
+      "acct_balance": {
+        "distinct": -1.0,
+        "null_frac": 0.0
+      },
+      "address": {
+        "distinct": -1.0,
+        "null_frac": 0.0
+      },
+      "comment": {
+        "distinct": -1.0,
+        "null_frac": 0.0
+      },
+      "name": {
+        "distinct": -1.0,
+        "null_frac": 0.0
+      },
+      "nationid": {
+        "distinct": -0.25,
+        "null_frac": 0.0
+      },
+      "phone": {
+        "distinct": -1.0,
+        "null_frac": 0.0
+      },
+      "supplierid": {
+        "distinct": -1.0,
+        "null_frac": 0.0
+      }
+    }
+  },
+  "nation": {
+    "row_count": 25,
+    "columns": {
+      "comment": {
+        "distinct": -1.0,
+        "null_frac": 0.0
+      },
+      "name": {
+        "distinct": -1.0,
+        "null_frac": 0.0
+      },
+      "nationid": {
+        "distinct": -1.0,
+        "null_frac": 0.0
+      },
+      "regionid": {
+        "distinct": -0.2,
+        "null_frac": 0.0
+      }
+    }
+  }
+}
