@@ -218,11 +218,32 @@ Do not commit your password to GitHub.
 * [x] PostgreSQL `ANALYZE`
 * [x] Baseline statistics collection
 
+### Phase 2 — SQL Parser & Logical Plan Builder
+
+The optimizer uses SQLGlot to parse SQL queries and convert
+the resulting AST into an internal relational algebra tree.
+
+Supported:
+- SELECT
+- FROM
+- INNER JOIN
+- JOIN ... ON
+- WHERE
+- AND predicates
+- Column projections
+- Table aliases
+
+Not currently supported:
+- Subqueries
+- OUTER JOIN
+- UNION / INTERSECT / EXCEPT
+- Window functions
+- Nested queries
+
 ## Future Phases
 
 Planned project phases include:
 
-* **Phase 2 — SQL Parsing:** Parse SQL queries and identify tables, joins, filters, projections, and predicates.
 * **Phase 3 — Cardinality Estimation:** Develop methods to estimate intermediate result sizes using collected statistics.
 * **Phase 4 — Cost Estimation:** Estimate the cost of alternative query execution plans.
 * **Phase 5 — Query Plan Generation:** Generate and compare alternative execution plans.
