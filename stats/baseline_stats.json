@@ -2,201 +2,187 @@
   "customer": {
     "row_count": 1500,
     "columns": {
-      "acct_balance": {
-        "distinct": -0.9993333,
-        "null_frac": 0.0
-      },
-      "address": {
-        "distinct": -1.0,
-        "null_frac": 0.0
-      },
-      "comment": {
-        "distinct": -1.0,
-        "null_frac": 0.0
-      },
       "cust_id": {
-        "distinct": -1.0,
-        "null_frac": 0.0
-      },
-      "market_segment": {
-        "distinct": 5.0,
-        "null_frac": 0.0
-      },
-      "name": {
-        "distinct": -1.0,
-        "null_frac": 0.0
+        "distinct": 1500,
+        "nulls": 0,
+        "min": "1",
+        "max": "1500"
       },
       "nationid": {
-        "distinct": 25.0,
-        "null_frac": 0.0
+        "distinct": 25,
+        "nulls": 0,
+        "min": "0",
+        "max": "24"
       },
-      "phone": {
-        "distinct": -1.0,
-        "null_frac": 0.0
+      "acct_balance": {
+        "distinct": 1499,
+        "nulls": 0,
+        "min": "-994.79",
+        "max": "9987.71"
+      },
+      "market_segment": {
+        "distinct": 5,
+        "nulls": 0,
+        "min": "AUTOMOBILE",
+        "max": "MACHINERY"
       }
     }
   },
   "orders": {
     "row_count": 15000,
     "columns": {
-      "clerk": {
-        "distinct": 1000.0,
-        "null_frac": 0.0
-      },
-      "comment": {
-        "distinct": -0.9996667,
-        "null_frac": 0.0
+      "order_id": {
+        "distinct": 15000,
+        "nulls": 0,
+        "min": "1",
+        "max": "60000"
       },
       "cust_id": {
-        "distinct": 1000.0,
-        "null_frac": 0.0
-      },
-      "order_date": {
-        "distinct": -0.16006666,
-        "null_frac": 0.0
-      },
-      "order_id": {
-        "distinct": -1.0,
-        "null_frac": 0.0
-      },
-      "order_priority": {
-        "distinct": 5.0,
-        "null_frac": 0.0
+        "distinct": 1000,
+        "nulls": 0,
+        "min": "1",
+        "max": "1499"
       },
       "order_status": {
-        "distinct": 3.0,
-        "null_frac": 0.0
-      },
-      "ship_priority": {
-        "distinct": 1.0,
-        "null_frac": 0.0
+        "distinct": 3,
+        "nulls": 0,
+        "min": "F",
+        "max": "P"
       },
       "total_price": {
-        "distinct": -0.9997333,
-        "null_frac": 0.0
+        "distinct": 14996,
+        "nulls": 0,
+        "min": "874.89",
+        "max": "466001.28"
+      },
+      "order_date": {
+        "distinct": 2401,
+        "nulls": 0,
+        "min": "1992-01-01",
+        "max": "1998-08-02"
+      },
+      "order_priority": {
+        "distinct": 5,
+        "nulls": 0,
+        "min": "1-URGENT",
+        "max": "5-LOW"
       }
     }
   },
   "lineitem": {
     "row_count": 60175,
     "columns": {
-      "comment": {
-        "distinct": -0.9575405,
-        "null_frac": 0.0
-      },
-      "commit_date": {
-        "distinct": 2454.0,
-        "null_frac": 0.0
-      },
-      "discount": {
-        "distinct": 11.0,
-        "null_frac": 0.0
-      },
-      "extended_price": {
-        "distinct": -0.5325301,
-        "null_frac": 0.0
-      },
-      "line_number": {
-        "distinct": 7.0,
-        "null_frac": 0.0
-      },
-      "line_status": {
-        "distinct": 2.0,
-        "null_frac": 0.0
-      },
       "order_id": {
-        "distinct": -0.23029497,
-        "null_frac": 0.0
-      },
-      "part_id": {
-        "distinct": 2000.0,
-        "null_frac": 0.0
-      },
-      "quantity": {
-        "distinct": 50.0,
-        "null_frac": 0.0
-      },
-      "receipt_date": {
-        "distinct": 2515.0,
-        "null_frac": 0.0
-      },
-      "return_flag": {
-        "distinct": 3.0,
-        "null_frac": 0.0
-      },
-      "ship_date": {
-        "distinct": 2510.0,
-        "null_frac": 0.0
-      },
-      "ship_instruct": {
-        "distinct": 4.0,
-        "null_frac": 0.0
-      },
-      "ship_mode": {
-        "distinct": 7.0,
-        "null_frac": 0.0
+        "distinct": 15000,
+        "nulls": 0,
+        "min": "1",
+        "max": "60000"
       },
       "supplierid": {
-        "distinct": 100.0,
-        "null_frac": 0.0
+        "distinct": 100,
+        "nulls": 0,
+        "min": "1",
+        "max": "100"
+      },
+      "quantity": {
+        "distinct": 50,
+        "nulls": 0,
+        "min": "1.00",
+        "max": "50.00"
+      },
+      "extended_price": {
+        "distinct": 35921,
+        "nulls": 0,
+        "min": "904.00",
+        "max": "94949.50"
+      },
+      "discount": {
+        "distinct": 11,
+        "nulls": 0,
+        "min": "0.00",
+        "max": "0.10"
       },
       "tax": {
-        "distinct": 9.0,
-        "null_frac": 0.0
+        "distinct": 9,
+        "nulls": 0,
+        "min": "0.00",
+        "max": "0.08"
+      },
+      "return_flag": {
+        "distinct": 3,
+        "nulls": 0,
+        "min": "A",
+        "max": "R"
+      },
+      "line_status": {
+        "distinct": 2,
+        "nulls": 0,
+        "min": "F",
+        "max": "O"
+      },
+      "ship_date": {
+        "distinct": 2518,
+        "nulls": 0,
+        "min": "1992-01-04",
+        "max": "1998-11-29"
+      },
+      "commit_date": {
+        "distinct": 2460,
+        "nulls": 0,
+        "min": "1992-02-02",
+        "max": "1998-10-28"
+      },
+      "receipt_date": {
+        "distinct": 2529,
+        "nulls": 0,
+        "min": "1992-01-09",
+        "max": "1998-12-25"
       }
     }
   },
   "supplier": {
     "row_count": 100,
     "columns": {
-      "acct_balance": {
-        "distinct": -1.0,
-        "null_frac": 0.0
-      },
-      "address": {
-        "distinct": -1.0,
-        "null_frac": 0.0
-      },
-      "comment": {
-        "distinct": -1.0,
-        "null_frac": 0.0
-      },
-      "name": {
-        "distinct": -1.0,
-        "null_frac": 0.0
+      "supplierid": {
+        "distinct": 100,
+        "nulls": 0,
+        "min": "1",
+        "max": "100"
       },
       "nationid": {
-        "distinct": -0.25,
-        "null_frac": 0.0
+        "distinct": 25,
+        "nulls": 0,
+        "min": "0",
+        "max": "24"
       },
-      "phone": {
-        "distinct": -1.0,
-        "null_frac": 0.0
-      },
-      "supplierid": {
-        "distinct": -1.0,
-        "null_frac": 0.0
+      "acct_balance": {
+        "distinct": 100,
+        "nulls": 0,
+        "min": "-966.20",
+        "max": "9915.24"
       }
     }
   },
   "nation": {
     "row_count": 25,
     "columns": {
-      "comment": {
-        "distinct": -1.0,
-        "null_frac": 0.0
-      },
-      "name": {
-        "distinct": -1.0,
-        "null_frac": 0.0
-      },
       "nationid": {
-        "distinct": -1.0,
-        "null_frac": 0.0
+        "distinct": 25,
+        "nulls": 0,
+        "min": "0",
+        "max": "24"
       },
       "regionid": {
-        "distinct": -0.2,
-        "null_frac": 0.0
+        "distinct": 5,
+        "nulls": 0,
+        "min": "0",
+        "max": "4"
+      },
+      "name": {
+        "distinct": 25,
+        "nulls": 0,
+        "min": "ALGERIA",
+        "max": "VIETNAM"
       }
     }
   }
