@@ -100,5 +100,12 @@ TEST_QUERIES = {
         WHERE o.order_status = 'F'
           AND l.discount > 0.05
           AND n.regionid = 1
-    """
+    """,
+    
+    "Q11_redundant_predicate": """
+        SELECT cust_id, name
+        FROM customer
+        WHERE acct_balance > 1000
+          AND acct_balance > 5000
+    """,
 }
