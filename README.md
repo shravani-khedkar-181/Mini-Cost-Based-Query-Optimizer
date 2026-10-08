@@ -240,11 +240,36 @@ Not currently supported:
 - Window functions
 - Nested queries
 
+## Phase 3 — Heuristic Rewrite Engine
+
+**Status: Completed ✅**
+
+Implemented and tested three heuristic query-rewrite rules:
+
+* **Selection Pushdown** — moves filters closer to their relevant base tables.
+* **Projection Pushdown** — keeps only required columns near the scans.
+* **Redundant Predicate Removal** — removes duplicate and subsumed predicates.
+
+### Verification
+
+* Q1–Q10 passed the complete rewrite pipeline.
+* Q11 verified redundant predicate removal:
+  `acct_balance > 1000 AND acct_balance > 5000` → `acct_balance > 5000`
+* Both-side predicates were correctly kept above the join.
+* Before/after logical plans were successfully generated.
+
+### Main Files
+
+* `scripts/rewrite_engine.py`
+* `scripts/test_phase3.py`
+* `scripts/test_selection_pushdown.py`
+* `scripts/test_projection_pushdown.py`
+* `scripts/test_redundant_predicates.py`
+
 ## Future Phases
 
 Planned project phases include:
 
-* **Phase 3 — Cardinality Estimation:** Develop methods to estimate intermediate result sizes using collected statistics.
 * **Phase 4 — Cost Estimation:** Estimate the cost of alternative query execution plans.
 * **Phase 5 — Query Plan Generation:** Generate and compare alternative execution plans.
 * **Phase 6 — PostgreSQL Comparison:** Compare the custom optimizer's decisions against PostgreSQL's optimizer.

@@ -17,7 +17,7 @@ class Scan:
 
 @dataclass
 class Selection:
-    predicate: str
+    predicate: exp.Expression
     child: object
 
 
@@ -29,7 +29,7 @@ class Projection:
 
 @dataclass
 class Join:
-    condition: str
+    condition: exp.Expression
     left: object
     right: object
 
@@ -137,7 +137,7 @@ def build_logical_plan(sql: str):
             )
 
         plan = Join(
-            condition=expression_to_string(join_condition),
+            condition=join_condition,
             left=plan,
             right=right_plan
         )
@@ -157,7 +157,7 @@ def build_logical_plan(sql: str):
         # Build Selection nodes from bottom to top.
         for predicate in predicates:
             plan = Selection(
-                predicate=expression_to_string(predicate),
+                predicate=predicate,
                 child=plan
             )
 
@@ -203,7 +203,7 @@ def print_plan(node, indent=0):
     elif isinstance(node, Selection):
 
         print(
-            f"{prefix}Selection[{node.predicate}]"
+            f"{prefix}Selection[{node.predicate.sql()}]"
         )
 
         print_plan(
@@ -214,7 +214,7 @@ def print_plan(node, indent=0):
     elif isinstance(node, Join):
 
         print(
-            f"{prefix}Join[{node.condition}]"
+            f"{prefix}Join[{node.condition.sql()}]"
         )
 
         print_plan(

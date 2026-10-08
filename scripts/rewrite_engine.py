@@ -1,9 +1,17 @@
-from logical_plan import (
-    Scan,
-    Selection,
-    Projection,
-    Join
-)
+try:
+    from logical_plan import (
+        Scan,
+        Selection,
+        Projection,
+        Join,
+    )
+except ModuleNotFoundError:
+    from scripts.logical_plan import (
+        Scan,
+        Selection,
+        Projection,
+        Join,
+    )
 
 def get_tables_in_subtree(node):
     """
@@ -32,6 +40,10 @@ def get_referenced_tables(predicate):
     """
     Extract table aliases referenced by a predicate.
 
+    Supports both:
+    - sqlglot expression objects (used by Logical Plan)
+    - predicate strings
+
     Examples:
         o.order_status = 'F'
             -> {'o'}
@@ -43,15 +55,19 @@ def get_referenced_tables(predicate):
     import sqlglot
     from sqlglot import exp
 
-    expression = sqlglot.parse_one(
-        predicate,
-        into=exp.Condition
-    )
+    # Phase 2 stores predicates as sqlglot expression objects.
+    # Only parse the predicate if it is still a string.
+    if isinstance(predicate, str):
+        expression = sqlglot.parse_one(
+            predicate,
+            into=exp.Condition
+        )
+    else:
+        expression = predicate
 
     tables = set()
 
     for column in expression.find_all(exp.Column):
-
         if column.table:
             tables.add(column.table)
 
@@ -143,31 +159,30 @@ def push_selections(node):
 
 def get_columns_from_expression(expression):
     """
-    Return column references from a predicate/expression.
+    Extract column references from a sqlglot expression.
 
-    Example:
-        o.order_status = 'F'
-        -> {'o.order_status'}
+    Supports both sqlglot expression objects and strings.
     """
 
     import sqlglot
     from sqlglot import exp
 
-    parsed = sqlglot.parse_one(
-        expression,
-        into=exp.Condition
-    )
+    # Predicates from Logical Plan are already sqlglot expressions.
+    if isinstance(expression, str):
+        parsed = sqlglot.parse_one(
+            expression,
+            into=exp.Condition
+        )
+    else:
+        parsed = expression
 
     columns = set()
 
     for column in parsed.find_all(exp.Column):
-        table = column.table
-        name = column.name
-
-        if table:
-            columns.add(f"{table}.{name}")
+        if column.table:
+            columns.add(f"{column.table}.{column.name}")
         else:
-            columns.add(name)
+            columns.add(column.name)
 
     return columns
 
