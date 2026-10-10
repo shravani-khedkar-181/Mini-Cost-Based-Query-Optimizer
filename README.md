@@ -266,12 +266,82 @@ Implemented and tested three heuristic query-rewrite rules:
 * `scripts/test_projection_pushdown.py`
 * `scripts/test_redundant_predicates.py`
 
+## Phase 4: Cost Estimation Module — Completed
+
+Implemented a cost estimation model using Phase 1 statistics.
+
+### Completed
+
+* Loaded `baseline_stats.json` for row counts and distinct values.
+* Implemented equality, range, and join selectivity estimation.
+* Added alias-to-table resolution (`o` → `orders`, etc.).
+* Implemented recursive row-count estimation for Scan, Selection, Projection, and Join.
+* Implemented recursive query cost estimation.
+* Validated Q1–Q10 using `test_phase4.py`.
+* Compared original and Phase 3 rewritten plan costs.
+
+### Results
+
+* Q5 cost reduction: **65.94%**
+* Q7 cost reduction: **83.60%**
+* Q10 cost reduction: **89.57%**
+* Single-table estimates were hand-verified against Phase 1 statistics.
+
+### Scope
+
+The model uses textbook selectivity formulas and a simplified nested-loop-style cost model. Histograms, buffer-pool effects, and detailed physical I/O costs are outside the project scope.
+
+**Phase 4 Status: Complete ✓**
+
+## Phase 5: Dynamic Programming Join-Order Optimization
+
+### Overview
+Phase 5 implements a dynamic programming (DP) algorithm to search for a low-cost join order for multi-table SQL queries. Instead of following only the join order produced by the SQL parser, the optimizer evaluates alternative connected join combinations using estimated cardinalities and costs.
+
+### Implementation
+The implementation is located in `scripts/join_order_search.py`.
+
+Key components:
+- **Join graph extraction:** Extracts base-table plans and join predicates from the logical plan.
+- **Predicate preservation:** Retains single-table selections and projections when initializing the DP search, so filters are reflected in base-plan estimates.
+- **Dynamic programming search:** Evaluates alternative connected join orders and retains the lowest-cost plan for each subset of tables.
+- **Join-condition validation:** Ensures joins connect the required table subsets and rejects disconnected join combinations that would otherwise require a Cartesian product.
+- **Cost and cardinality estimation:** Uses the existing cost model to compare candidate plans.
+
+### Testing
+Run the Phase 5 tests from the project root:
+
+```powershell
+python scripts\test_phase5.py
+python scripts\test_phase5_filtered.py
+```
+
+The tests cover two-table and three-table joins, join-order cost comparison, multiple join predicates, disconnected join graphs, join-condition validation, and filtered multi-table queries.
+
+### Example Results
+
+| Query | Tables | Estimated Rows | Estimated Cost |
+|---|---:|---:|---:|
+| Q7 | 3 | 6,686.11 | 12,452.86 |
+| Q10 | 5 | 1,337.22 | 7,474.11 |
+
+These values are estimates produced by the current cost model, not measured execution times.
+
+### Observations
+- **Q7:** The selected DP plan retained the original effective join order.
+- **Q10:** The selected plan joined the filtered `nation` and `supplier` relations early. The estimated cardinality of `nation` after applying `regionid = 1` was five rows.
+- The selected join trees were printed and inspected to verify that the DP search retained the single-table filters.
+
+### Phase 5 Status
+The existing Phase 5 test suite passed, and the filtered-query checks for Q7 and Q10 produced join plans with estimated costs and cardinalities.
+
+A quantified cost improvement over the original join order should only be reported after both plans are evaluated using the same cost model.
+
+**Phase 5 Status: Complete ✓**
+
 ## Future Phases
 
 Planned project phases include:
-
-* **Phase 4 — Cost Estimation:** Estimate the cost of alternative query execution plans.
-* **Phase 5 — Query Plan Generation:** Generate and compare alternative execution plans.
 * **Phase 6 — PostgreSQL Comparison:** Compare the custom optimizer's decisions against PostgreSQL's optimizer.
 * **Phase 7 — Testing and Evaluation:** Evaluate optimizer accuracy and performance using TPC-H queries.
 * **Phase 8 — Dashboard:** Build a dashboard for visualizing query plans, estimated cardinalities, estimated costs, PostgreSQL plans, and optimizer comparisons.

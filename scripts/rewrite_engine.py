@@ -347,210 +347,118 @@ def push_projections(node, needed_columns=None):
 
     return node
 
+
 def remove_redundant_predicates(node):
-    """
-    Remove exact duplicate predicates and simple
-    same-column subsumed predicates.
-    """
+    """Remove duplicate and simple subsumed numeric predicates."""
+
+    from sqlglot import exp
+
+    def parse_predicate(predicate):
+        if isinstance(predicate, str):
+            import sqlglot
+            return sqlglot.parse_one(predicate, into=exp.Condition)
+        return predicate
+
+    def predicate_signature(predicate):
+        try:
+            return parse_predicate(predicate).sql()
+        except Exception:
+            return str(predicate)
 
     if isinstance(node, Projection):
-
-        node.child = remove_redundant_predicates(
-            node.child
-        )
-
+        node.child = remove_redundant_predicates(node.child)
         return node
 
     if isinstance(node, Join):
-
-        node.left = remove_redundant_predicates(
-            node.left
-        )
-
-        node.right = remove_redundant_predicates(
-            node.right
-        )
-
+        node.left = remove_redundant_predicates(node.left)
+        node.right = remove_redundant_predicates(node.right)
         return node
 
-    if isinstance(node, Selection):
+    if not isinstance(node, Selection):
+        return node
 
-        # First simplify the child.
-        node.child = remove_redundant_predicates(
-            node.child
-        )
+    node.child = remove_redundant_predicates(node.child)
 
-        # Collect consecutive Selection nodes.
-        selections = []
-        current = node
+    # Gather consecutive Selection nodes.
+    selections = []
+    current = node
 
-        while isinstance(current, Selection):
+    while isinstance(current, Selection):
+        selections.append(current.predicate)
+        current = current.child
 
-            selections.append(current.predicate)
-            current = current.child
+    # Remove exact duplicates, including expression-object predicates.
+    unique = []
+    seen = set()
 
-        # Nothing to simplify.
-        if len(selections) <= 1:
-            return node
+    for predicate in selections:
+        signature = predicate_signature(predicate)
+        if signature not in seen:
+            seen.add(signature)
+            unique.append(predicate)
 
-        # Remove exact duplicates while preserving order.
-        unique = []
+    selections = unique
+    removable = set()
 
-        for predicate in selections:
+    # Remove weaker predicates when a stronger predicate on the same
+    # numeric column makes them unnecessary.
+    for i in range(len(selections)):
+        for j in range(i + 1, len(selections)):
+            try:
+                a = parse_predicate(selections[i])
+                b = parse_predicate(selections[j])
 
-            if predicate not in unique:
-                unique.append(predicate)
-
-        selections = unique
-
-        # ----------------------------------------------------
-        # Simple same-column comparison subsumption
-        # ----------------------------------------------------
-
-        import sqlglot
-        from sqlglot import exp
-
-        removable = set()
-
-        for i in range(len(selections)):
-
-            for j in range(i + 1, len(selections)):
-
-                try:
-                    a = sqlglot.parse_one(
-                        selections[i],
-                        into=exp.Condition
-                    )
-
-                    b = sqlglot.parse_one(
-                        selections[j],
-                        into=exp.Condition
-                    )
-
-                    if not isinstance(a, exp.Binary):
-                        continue
-
-                    if not isinstance(b, exp.Binary):
-                        continue
-
-                    a_column = a.left
-                    b_column = b.left
-
-                    if not isinstance(
-                        a_column,
-                        exp.Column
-                    ):
-                        continue
-
-                    if not isinstance(
-                        b_column,
-                        exp.Column
-                    ):
-                        continue
-
-                    if (
-                        a_column.sql()
-                        != b_column.sql()
-                    ):
-                        continue
-
-                    a_value = a.right
-                    b_value = b.right
-
-                    if not isinstance(
-                        a_value,
-                        exp.Literal
-                    ):
-                        continue
-
-                    if not isinstance(
-                        b_value,
-                        exp.Literal
-                    ):
-                        continue
-
-                    if not (
-                        a_value.is_number
-                        and b_value.is_number
-                    ):
-                        continue
-
-                    av = float(a_value.this)
-                    bv = float(b_value.this)
-
-                    a_op = a.key
-                    b_op = b.key
-
-                    # x > A AND x > B
-                    if a_op == "gt" and b_op == "gt":
-
-                        if av >= bv:
-                            removable.add(j)
-                        else:
-                            removable.add(i)
-
-                    # x >= A AND x >= B
-                    elif (
-                        a_op == "gte"
-                        and b_op == "gte"
-                    ):
-
-                        if av >= bv:
-                            removable.add(j)
-                        else:
-                            removable.add(i)
-
-                    # x < A AND x < B
-                    elif a_op == "lt" and b_op == "lt":
-
-                        if av <= bv:
-                            removable.add(j)
-                        else:
-                            removable.add(i)
-
-                    # x <= A AND x <= B
-                    elif (
-                        a_op == "lte"
-                        and b_op == "lte"
-                    ):
-
-                        if av <= bv:
-                            removable.add(j)
-                        else:
-                            removable.add(i)
-
-                    # x = A AND x = A
-                    elif (
-                        a_op == "eq"
-                        and b_op == "eq"
-                        and av == bv
-                    ):
-
-                        removable.add(j)
-
-                except Exception:
+                if not isinstance(a, exp.Binary) or not isinstance(b, exp.Binary):
                     continue
 
-        selections = [
-            predicate
-            for index, predicate
-            in enumerate(selections)
-            if index not in removable
-        ]
+                if not isinstance(a.this, exp.Column) or not isinstance(b.this, exp.Column):
+                    continue
 
-        # Rebuild Selection stack.
-        result = current
+                if a.this.sql() != b.this.sql():
+                    continue
 
-        for predicate in reversed(selections):
+                if not isinstance(a.expression, exp.Literal) or not isinstance(b.expression, exp.Literal):
+                    continue
 
-            result = Selection(
-                predicate=predicate,
-                child=result
-            )
+                if not (a.expression.is_number and b.expression.is_number):
+                    continue
 
-        return result
+                av = float(a.expression.this)
+                bv = float(b.expression.this)
 
-    return node
+                op_a = a.key
+                op_b = b.key
+
+                if op_a == op_b == "gt":
+                    removable.add(j if av >= bv else i)
+
+                elif op_a == op_b == "gte":
+                    removable.add(j if av >= bv else i)
+
+                elif op_a == op_b == "lt":
+                    removable.add(j if av <= bv else i)
+
+                elif op_a == op_b == "lte":
+                    removable.add(j if av <= bv else i)
+
+                elif op_a == op_b == "eq" and av == bv:
+                    removable.add(j)
+
+            except (AttributeError, TypeError, ValueError):
+                continue
+
+    selections = [
+        predicate for index, predicate in enumerate(selections)
+        if index not in removable
+    ]
+
+    # Rebuild the Selection stack.
+    result = current
+    for predicate in reversed(selections):
+        result = Selection(predicate=predicate, child=result)
+
+    return result
+
 
 def rewrite(plan):
     """

@@ -52,12 +52,19 @@ def estimate_selectivity(predicate, left_table=None, right_table=None):
     Range:
         selectivity = 1 / 3
 
-    Join equality:
-        selectivity = 1 / max(distinct_count(left), distinct_count(right))
-
-    Unknown predicates:
-        selectivity = 1 / 3
+    AND:
+        Multiply the selectivities of the individual predicates.
     """
+
+    # Combined predicates: A AND B
+    if isinstance(predicate, exp.And):
+        left_selectivity = estimate_selectivity(
+            predicate.this, left_table, right_table
+        )
+        right_selectivity = estimate_selectivity(
+            predicate.expression, left_table, right_table
+        )
+        return left_selectivity * right_selectivity
 
     # Join equality: a.col = b.col
     if isinstance(predicate, exp.EQ):
@@ -87,13 +94,10 @@ def estimate_selectivity(predicate, left_table=None, right_table=None):
                 return 1 / get_distinct_count(table, column)
 
     # Range predicates
-    if isinstance(
-        predicate,
-        (exp.GT, exp.GTE, exp.LT, exp.LTE)
-    ):
+    if isinstance(predicate, (exp.GT, exp.GTE, exp.LT, exp.LTE)):
         return 1 / 3
 
-    # Fallback
+    # Fallback for unsupported predicates
     return 1 / 3
 
 def estimate_rows(node):
